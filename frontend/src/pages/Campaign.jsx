@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 import ContributeModal from "../components/ContributeModal";
 import RelativeTime from "../components/RelativeTime";
 import DisputeModal from "../components/DisputeModal";
@@ -139,6 +140,7 @@ export default function Campaign() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const toast = useToast();
   const { user } = useAuth();
 
   const [campaign, setCampaign] = useState(null);
@@ -633,8 +635,8 @@ export default function Campaign() {
       await api.deleteCampaign(campaign.id);
       setShowDeleteDialog(false);
       setDeleteConfirmation("");
-      // Redirect to home after successful deletion
-      window.location.href = "/";
+      toast("Campaign deleted successfully.", "success");
+      navigate("/", { replace: true });
     } catch (err) {
       setDeleteError(err.message || "Failed to delete campaign");
     } finally {
